@@ -3,3 +3,5 @@ compatibility_date = "2024-12-01"
 
 # Cloudflare Pages 配置
 pages_build_output_dir = "out"
+
+# trigger rebuild
