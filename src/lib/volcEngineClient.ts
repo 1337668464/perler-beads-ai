@@ -10,7 +10,6 @@ const encoder = new TextEncoder();
 const HEADER_KEYS_TO_IGNORE = new Set([
   'authorization',
   'content-length',
-  'content-type',
   'user-agent',
 ]);
 
@@ -159,7 +158,8 @@ async function submitTask(imageBase64: string, prompt: string, accessKeyId: stri
   const headers: Record<string, string> = {
     'host': VOLC_API_HOST,
     'X-Date': xDate,
-    'content-type': 'application/json'
+    'content-type': 'application/json',
+    'x-content-sha256': bodySha
   };
 
   const authorization = await generateSignature(
@@ -234,7 +234,8 @@ async function queryTask(taskId: string, accessKeyId: string, secretAccessKey: s
   const headers: Record<string, string> = {
     'host': VOLC_API_HOST,
     'X-Date': xDate,
-    'content-type': 'application/json'
+    'content-type': 'application/json',
+    'x-content-sha256': bodySha
   };
 
   const authorization = await generateSignature(
