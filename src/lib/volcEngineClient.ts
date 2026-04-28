@@ -17,6 +17,15 @@ function toHex(buf: Uint8Array): string {
   return Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+function fromBase64(base64: string): Uint8Array {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}
+
 async function hmac(key: Uint8Array, data: string): Promise<Uint8Array> {
   const cryptoKey = await crypto.subtle.importKey(
     'raw',
@@ -112,7 +121,7 @@ async function generateSignature(
   const canonicalRequestHash = await sha256(canonicalRequest);
   const stringToSign = ['HMAC-SHA256', datetime, credentialScope, canonicalRequestHash].join('\n');
 
-  const secretKey = encoder.encode(secretAccessKey);
+  const secretKey = fromBase64(secretAccessKey);
   const kDate = await hmac(secretKey, date);
   const kRegion = await hmac(kDate, VOLC_API_REGION);
   const kService = await hmac(kRegion, VOLC_API_SERVICE);
